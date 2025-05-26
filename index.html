@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Underground Guest List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #0f0f0f;
+      font-family: monospace;
+    }
+    .glitch {
+      color: white;
+      font-size: 2rem;
+      position: relative;
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .glitch::before {
+      animation: glitchTop 1s infinite linear alternate-reverse;
+      color: #f0f;
+      top: -2px;
+    }
+    .glitch::after {
+      animation: glitchBottom 1s infinite linear alternate-reverse;
+      color: #0ff;
+      top: 2px;
+    }
+    @keyframes glitchTop {
+      0% { clip: rect(0, 900px, 0, 0); }
+      50% { clip: rect(0, 900px, 50px, 0); }
+      100% { clip: rect(0, 900px, 0, 0); }
+    }
+    @keyframes glitchBottom {
+      0% { clip: rect(0, 900px, 0, 0); }
+      50% { clip: rect(50px, 900px, 100px, 0); }
+      100% { clip: rect(0, 900px, 0, 0); }
+    }
+  </style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen px-4">
+  <div class="glitch mb-6" data-text="GUEST LIST">GUEST LIST</div>
+
+  <form id="guestForm" class="w-full max-w-sm">
+    <input type="text" id="guestName" placeholder="your alias..." class="bg-black border border-pink-500 text-white px-4 py-2 w-full mb-4 focus:outline-none">
+    <button type="submit" class="bg-pink-700 hover:bg-pink-800 px-4 py-2 w-full">Sign In</button>
+  </form>
+
+  <div id="list" class="mt-10 w-full max-w-sm text-sm text-gray-400"></div>
+
+  <script>
+    const form = document.getElementById('guestForm');
+    const nameInput = document.getElementById('guestName');
+    const list = document.getElementById('list');
+
+    const guests = JSON.parse(localStorage.getItem('guests') || '[]');
+    render();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      if (!name) return;
+      guests.push(name);
+      localStorage.setItem('guests', JSON.stringify(guests));
+      nameInput.value = '';
+      render();
+    });
+
+    function render() {
+      list.innerHTML = guests.map(name => `• ${name}`).join('<br>');
+    }
+  </script>
+</body>
+</html>
